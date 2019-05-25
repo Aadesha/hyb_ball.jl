@@ -15,7 +15,7 @@ end
 
 #sin___________________________________________________#
 
-Dx=Interval(-1.57079632679,1.57079632679)
+Dx=Interval(-4.5,-0.3)
 dom=Dx
 x=Taylor1(7)
 
@@ -27,7 +27,7 @@ global_min, global_max = _minmax(sin, dom)
 
 #bspline0___________________________________________________#
 
-Du=Interval(0.0,1.0)
+Du=Interval(-4.5,-0.3)
 dom=Du
 u=Taylor1(3)
 
@@ -62,9 +62,9 @@ global_min, global_max = _minmax(bspline3, dom)
 
 #Doppler___________________________________________________________________#
 
-Du=Interval(-100.0,100.0)
-Dv=Interval(20.0,20000.0)
-Dt=Interval(-30.0,50.0)
+Du=Interval(-4.5,-0.3)
+Dv=Interval(0.4,0.9)
+Dt=Interval(3.8,7.8)
 dom=Du×Dv×Dt
 v,u,T=set_variables(Float64,["v","u","T"],order=4)
 
@@ -79,8 +79,8 @@ global_min, global_max = _minmax(Doppler, dom)
 
 #himmilbeau___________________________________________________________________#
 
-Dx1=Interval(-5.0,5.0)
-Dx2=Dx1
+Dx1=Interval(-4.5,-0.3)
+Dx2=Interval(0.4,0.9)
 dom=Dx1×Dx2
 x1,x2=set_variables(Float64,["x1","x2"],order=5)
 
@@ -93,8 +93,12 @@ global_min, global_max = _minmax(himmilbeau , dom)
 
 #kepler________________________________________________________________________#
 
-Dx1=Interval(4.0,6.36)
-Dx2=Dx3=Dx4=Dx5=Dx6=Dx1
+Dx1=Interval(-4.5,-0.3)
+Dx2=Interval(0.4,0.9)
+Dx3=Interval(3.8,7.8)
+Dx4=Interval(8.0,10.0)
+Dx5=Interval(-10.0,8.0)
+Dx6=Interval(1.0,2.0)
 dom=Dx1×Dx2×Dx3×Dx4×Dx5×Dx6
 
 
@@ -127,8 +131,9 @@ evaluate(kepler2, dom)
 global_min, global_max = _minmax(kepler2, dom)
 
 #Rigidbody________________________________________________________#
-Dx1=Interval(-15.0,15.0)
-Dx2=Dx3=Dx1
+Dx1=Interval(-4.5,-0.3)
+Dx2=Interval(0.4,0.9)
+Dx3=Interval(3.8,7.8)
 dom=Dx1×Dx2×Dx3
 x1,x2,x3=set_variables(Float64,["x1","x2","x3"],order=3)
 
@@ -148,8 +153,8 @@ global_min, global_max = _minmax(Rigidbody2, dom)
 
 #turbine_________________________________________________________#
 
-Dv=Interval(-4.5,.3)
-Dw=Interval(-0.3,0.9)
+Dv=Interval(-4.5,-0.3)
+Dw=Interval(0.4,0.9)
 Dr=Interval(3.8,7.8)
 dom=Dv×Dw×Dr
 v,w,r=set_variables(Float64,["v","w","r"],order=6)
