@@ -153,14 +153,14 @@ Dw=Interval(-0.3,0.9)
 Dr=Interval(3.8,7.8)
 dom=Dv×Dw×Dr
 v,w,r=set_variables(Float64,["v","w","r"],order=6)
-
+#=
 turbine1= 3+ 2/(r*r) - (0.125*(3-2*v)*(w*w*r*r))/(1-v) - 4.5
 
 
 evaluate(turbine1, dom)
 @benchmark evaluate($turbine1, $dom)
 global_min, global_max = _minmax(turbine1, dom)
-
+=#
 
 turbine2=6*v - 0.5 * v * (w*w*r*r) / (1-v) - 2.5
 
@@ -169,9 +169,10 @@ evaluate(turbine2, dom)
 @benchmark evaluate($turbine2, $dom)
 global_min, global_max = _minmax(turbine2, dom)
 
-
+#=
 turbine3= 3 - 2/(r*r) - 0.125 * (1+2*v) * (w*w*r*r) / (1-v) - 0.5
 
 evaluate(turbine3, dom)
 @benchmark evaluate($turbine3, $dom)
 global_min, global_max = _minmax(turbine3, dom)
+=#
