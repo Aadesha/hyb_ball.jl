@@ -4,7 +4,7 @@ function breanchandbound(P::Taylor1{T},dom::Interval{T},ϵ::Number)
     D = bisect(dom)
     D = [D[i][1] for i = 1:length(D)]
     R = [evaluate(p, D[i]) for i = 1:length(D)]
-    while #conditon
+    while #condition
         Rperv = Interval(minimum(R[i].lo for i=1:length(R)),
                          maximum(R[i].hi for i=1:length(R)))
         max = maximum(R)
