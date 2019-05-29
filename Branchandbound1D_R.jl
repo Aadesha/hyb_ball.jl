@@ -3,7 +3,7 @@ using Revise, TaylorModels, Plots, TaylorSeries, IntervalArithmetic
 
 
 
-function breanchandbound(P::Taylor1{T},dom::Interval{T},ϵ::Number)where{T}
+function branchandbound(P::Taylor1{T},dom::Interval{T},ϵ::Number)where{T}
     Rperv = evaluate(p,dom)
     H = (Float64(dom.hi) + Float64(dom.lo))/2
     D = [Interval(dom.lo,H),Interval(H,dom.hi)]
