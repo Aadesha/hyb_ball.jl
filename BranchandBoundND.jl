@@ -10,7 +10,7 @@ function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N
     Rnext = Interval(minimum(R[i].lo for i = 1:length(R)),
                      maximum(R[i].hi for i = 1:length(R)))
     while  (Rperv.hi - Rnext.hi) <= ϵ*(Rnext.hi - Rnext.lo) &&
-           (Rperv.lo - Rnext.lo) <= ϵ*(Rnext.hi - Rnext.lo) && (K <= 100)
+           (Rperv.lo - Rnext.lo) <= ϵ*(Rnext.hi - Rnext.lo) && (K <= 1000)
         Rperv = Interval(minimum(R[i].lo for i = 1:length(R)),
                          maximum(R[i].hi for i = 1:length(R)))
         R_x = [ R[i].hi for i = 1:length(R)]
@@ -20,6 +20,8 @@ function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N
         min = minimum(R[i].lo for i = 1:length(R))
         min = findall(x->x == min, R_n)[1]
         l_D = length(D[1])
+        println(D)
+        println(R)
         K = K + 1
         if min == max
             BA = [ ((D[max][i]).hi - (D[max][i]).lo) for i = 1:l_D]
@@ -31,13 +33,17 @@ function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N
             D[max] = convert(IntervalBox, D1)
             DD = append!(D[1:max],convert(IntervalBox, D2))
             D = append!(DD, D[(max+1):length(D)])
+            println("\n")
+            println(max)
+            println(D)
+            println("1")
             R[max] = evaluate(p,D[max])
             RR = append!(R[1:max], evaluate(p,D[max+1]))
             R = append!(RR, R[(max+1):length(R)])
             Rnext = Interval(minimum(R[i].lo for i=1:length(R)),
                              maximum(R[i].hi for i=1:length(R)))
+            println(R)
         else
-            println(max)
             BA = [ ((D[max][i]).hi - (D[max][i]).lo) for i = 1:l_D]
             Beta1 = maximum(BA)
             β = findall(x->x==Beta1,BA)[1]
@@ -47,9 +53,14 @@ function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N
             D[max] = convert(IntervalBox, D1)
             DD = push!(D[1:max],convert(IntervalBox, D2)) #gives error
             D = append!(DD, D[(max+1):length(D)])
+            println("\n")
+            println(max)
+            println(D)
+            println("2")
             R[max] = evaluate(p,D[max])
             RR = append!(R[1:max], evaluate(p,D[max+1]))
             R = append!(RR, R[(max+1):length(R)])
+            println(R)
             if max < min
                 min = min + 1
             end
@@ -59,27 +70,29 @@ function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N
             Mat = ones(Int64,length(BA)); Mat[β] = 2
             H = convert(Hyperrectangle,D[min])
             D1,D2 = split(H,Mat)
-            D[max] = convert(IntervalBox, D1)
+            D[min] = convert(IntervalBox, D1)
             DD = push!(D[1:min],convert(IntervalBox, D2))
-            if (min + 1) == length(D)
-                D = append!(DD, D[min+1])
-            else
-                D = append!(DD, D[(min+1):length(D)])
-            end
+            D = append!(DD, D[(min+1):length(D)])
+            println("\n")
+            println(min)
+            println(D)
+            println("3")
             R[min] = evaluate(p,D[min])
             RR = append!(R[1:min], evaluate(p,D[min+1]))
             R = append!(RR, R[(min+1):length(R)])
             Rnext = Interval(minimum(R[i].lo for i=1:length(R)),
                              maximum(R[i].hi for i=1:length(R)))
+            println(R)
         end
     end
+    println(K)
     return Interval(minimum(R[i].lo for i=1:length(R)),
                     maximum(R[i].hi for i=1:length(R)))
 end
 
 m = 4
 x₁, x₂ = set_variables(Float64, ["x₁", "x₂"], order=2*m)
-p = 1 + x₁^3 - x₂^2
+p = 1 - x₂ + 2*x₁
 Dx₁ = Interval(0.0, 3.0)
 Dx₂ = Interval(-1.0, 1.0)
 D = Dx₁ × Dx₂
