@@ -1,7 +1,7 @@
 using Revise, TaylorModels, Plots, TaylorSeries, IntervalArithmetic
 using LazySets:Hyperrectangle,split
 
-function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N,T}
+function branchandbound(p::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N,T}
     K = 1
     Rperv = evaluate(p,dom)
     D1,D2 = bisect(dom)
@@ -20,29 +20,29 @@ function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N
         min = minimum(R[i].lo for i = 1:length(R))
         min = findall(x->x == min, R_n)[1]
         l_D = length(D[1])
-        println(D)
-        println(R)
+        #println(D)
+        #println(R)
         K = K + 1
         if min == max
             BA = [ ((D[max][i]).hi - (D[max][i]).lo) for i = 1:l_D]
             Beta1 = maximum(BA)
-            β = findall(x->x==Beta1,BA)
+            β = findall(x->x==Beta1,BA)[1]
             Mat = ones(Int64,length(BA)); Mat[β] = 2
             H = convert(Hyperrectangle,D[max])
             D1,D2 = split(H,Mat)
             D[max] = convert(IntervalBox, D1)
-            DD = append!(D[1:max],convert(IntervalBox, D2))
+            DD = push!(D[1:max],convert(IntervalBox, D2))
             D = append!(DD, D[(max+1):length(D)])
-            println("\n")
-            println(max)
-            println(D)
-            println("1")
+            #println("\n")
+            #println(max)
+            #println(D)
+            #println("1")
             R[max] = evaluate(p,D[max])
             RR = append!(R[1:max], evaluate(p,D[max+1]))
             R = append!(RR, R[(max+1):length(R)])
             Rnext = Interval(minimum(R[i].lo for i=1:length(R)),
                              maximum(R[i].hi for i=1:length(R)))
-            println(R)
+            #println(R)
         else
             BA = [ ((D[max][i]).hi - (D[max][i]).lo) for i = 1:l_D]
             Beta1 = maximum(BA)
@@ -51,16 +51,16 @@ function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N
             H = convert(Hyperrectangle,D[max])
             D1,D2 = split(H,Mat)
             D[max] = convert(IntervalBox, D1)
-            DD = push!(D[1:max],convert(IntervalBox, D2)) #gives error
+            DD = push!(D[1:max],convert(IntervalBox, D2))
             D = append!(DD, D[(max+1):length(D)])
-            println("\n")
-            println(max)
-            println(D)
-            println("2")
+            #println("\n")
+            #println(max)
+            #println(D)
+            #println("2")
             R[max] = evaluate(p,D[max])
             RR = append!(R[1:max], evaluate(p,D[max+1]))
             R = append!(RR, R[(max+1):length(R)])
-            println(R)
+            #println(R)
             if max < min
                 min = min + 1
             end
@@ -73,23 +73,23 @@ function branchandbound(P::TaylorN{T},dom::IntervalBox{N,T},ϵ::Number) where {N
             D[min] = convert(IntervalBox, D1)
             DD = push!(D[1:min],convert(IntervalBox, D2))
             D = append!(DD, D[(min+1):length(D)])
-            println("\n")
-            println(min)
-            println(D)
-            println("3")
+            #println("\n")
+            #println(min)
+            #println(D)
+            #println("3")
             R[min] = evaluate(p,D[min])
             RR = append!(R[1:min], evaluate(p,D[min+1]))
             R = append!(RR, R[(min+1):length(R)])
             Rnext = Interval(minimum(R[i].lo for i=1:length(R)),
                              maximum(R[i].hi for i=1:length(R)))
-            println(R)
+            #println(R)
         end
     end
     println(K)
     return Interval(minimum(R[i].lo for i=1:length(R)),
                     maximum(R[i].hi for i=1:length(R)))
 end
-
+#=
 m = 4
 x₁, x₂ = set_variables(Float64, ["x₁", "x₂"], order=2*m)
 p = 1 - x₂ + 2*x₁
@@ -99,3 +99,14 @@ D = Dx₁ × Dx₂
 
 println(branchandbound(p,D,0.1))
 println(evaluate(p,D))
+=#
+Dx1=Interval(-4.5,-0.3)
+Dx2=Interval(0.4,0.9)
+dom=Dx1×Dx2
+x1,x2=set_variables(Float64,["x1","x2"],order=5)
+
+himmilbeau=(x1*x1 + x2 - 11)*(x1 * x1 + x2 - 11)
+                                        + (x1 + x2*x2 - 7)*(x1 + x2*x2 - 7)
+println(branchandbound(himmilbeau,dom,0.27))
+#breanch and bound
+println(evaluate(himmilbeau,dom))
