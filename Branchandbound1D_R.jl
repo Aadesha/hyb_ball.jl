@@ -1,14 +1,15 @@
-using Revise, TaylorModels, Plots, TaylorSeries, IntervalArithmetic
+using Revise, TaylorModels, Plots, TaylorSeries, IntervalArithmetic, IntervalOptimisation
 
 
-function branchandbound(P::Taylor1{T},dom::Interval{T},ϵ::Number)where{T}
+function branchandbound(p::Taylor1{T},dom::Interval{T},ϵ::Number)where{T}
     Rperv = evaluate(p,dom)
     D = bisect(dom)
     D = [ D[i][1] for i = 1:2]
-    println(D);println("1")
+    #println(D);
     R = [evaluate(p, D[i]) for i = 1:length(D)]
     Rnext = Interval(minimum(R[i].lo for i=1:length(R)),
                      maximum(R[i].hi for i=1:length(R)))
+    println(Rperv)
     K = 1
     while  (Rperv.hi - Rnext.hi) <= ϵ*(Rnext.hi - Rnext.lo) &&
            (Rperv.lo - Rnext.lo) <= ϵ*(Rnext.hi - Rnext.lo) && (K <= 100)
@@ -68,7 +69,24 @@ function branchandbound(P::Taylor1{T},dom::Interval{T},ϵ::Number)where{T}
     return Interval(minimum(R[i].lo for i=1:length(R)),
                     maximum(R[i].hi for i=1:length(R)))
 end
-p = Taylor1([0.0, 1.0, 1.0],3)
-D = Interval(-3.0, 1.0)
+
 ϵ=0.4
-println(branchandbound(p,D,ϵ))
+
+Dx=Interval(-4.5,-0.3)
+dom=Dx
+x=Taylor1(7)
+
+sin=x - (x*x*x)/6.0 + (x*x*x*x*x)/120.0 - (x*x*x*x*x*x*x)/5040.0
+
+println(branchandbound(sin,Dx,ϵ))
+
+function _minmax(p, dom) #takes time
+    global_min, _ = minimise(p, dom)
+    minus_global_max, _ = minimise(-p, dom)
+    global_max = -minus_global_max
+    return global_min, global_max
+end
+global_min, global_max = _minmax(sin, Dx)
+
+println(global_min)
+println(global_max)
