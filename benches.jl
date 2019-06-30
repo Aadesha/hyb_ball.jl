@@ -77,17 +77,6 @@ function _bounds_IA(f, dom)
     return f(dom...)
 end
 
-# affine arithmetic substitution
-function _bounds_AA(f::Function, dom::Interval)
-    x = AFF(dom, 1, 1)
-    return interval(f(x))
-end
-
-# affine arithmetic in N variables
-function _bounds_AA(f::Function, dom::IntervalBox{N}) where {N}
-    x = [AFF(dom[i], N, i) for i in 1:N]
-    return interval(f(x...))
-end
 
 # taylor model in one variable
 function _bounds_TM(f::Function, dom::Interval, order::Int)
@@ -127,13 +116,6 @@ function _bounds_TM_NORM(f::Function, dom::IntervalBox{N}, order::Int) where {N}
     return evaluate(f(xnormTM...), symBox)
 end
 
-
-function SDSF(PP::Function)
-    for ALGO in available_algorithms, m in [2,5,10]
-        bnd = bounds(PP, dom, algorithm=ALGO,order = m)
-        RELPREC[model_name,m,ALGO] = relative_precision(bnd, REF[model_name])
-    end
-end
 
 model_name = "sin"
 dom = a
