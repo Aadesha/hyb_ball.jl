@@ -103,12 +103,10 @@ Dx1=Interval(4.0,6.36)
 Dx2=Dx3=Dx4=Dx5=Dx6=Dx1
 dom=Dx1×Dx2×Dx3×Dx4×Dx5×Dx6
 
-
 x1,x2,x3,x4,x5,x6=set_variables(Float64,["x1","x2","x3","x4","x5","x6"],order=3)
 s="kepler0=  x2 * x5 + x3 * x6 - x2 * x3 - x5 * x6 + x1 * (-x1 + x2 + x3 - x4 + x5 + x6);"
 kepler0=Meta.parse(s).args[1].args[2]
 kepler0=eval(kepler0)
-
 
 evaluate(kepler0, dom)
 @benchmark evaluate($kepler0, $dom)
@@ -173,7 +171,6 @@ evaluate(turbine1, dom)
 @benchmark evaluate($turbine1, $dom)
 global_min, global_max = minmax(turbine1, dom)
 
-
 s="turbine2=6*v - 0.5 * v * (w*w*r*r) / (1-v) - 2.5;"
 turbine2=Meta.parse(s).args[1].args[2]
 turbine2=eval(turbine2)
@@ -181,7 +178,6 @@ turbine2=eval(turbine2)
 evaluate(turbine2, dom)
 @benchmark evaluate($turbine2, $dom)
 global_min, global_max = minmax(turbine2, dom)
-
 
 s="turbine3= 3 - 2/(r*r) - 0.125 * (1+2*v) * (w*w*r*r) / (1-v) - 0.5;"
 turbine3=Meta.parse(s).args[1].args[2]
